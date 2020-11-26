@@ -1,0 +1,75 @@
+﻿@{ 
+    string data = DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString();
+}
+<nav class="navbar navbar-expand-lg navbar-light">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Alterna navegação do menu principal">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <a class="navbar-brand" href="Menu01" title="Abre página do menu principal do sistema">
+        <img class="img-fluid" src="img/log-0.png">
+    </a>
+    <div class="collapse navbar-collapse align-self-center" id="navbarNav">
+        <ul class="navbar-nav mr-auto text-center">
+            <li class="nav-item">
+                <a class="nav-link" href="Con_Emitente?ope=1&cod=0">
+                    <i class="fa fa-cog fa-2x"
+                       aria-hidden="true"></i><br /> Emitentes
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="Man_Pagto?ope=1&cod=0">
+                    <i class="fa fa-shopping-cart fa-2x" aria-hidden="true"></i><br />
+                    Pagamentos
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="Con_Produto?ope=1&cod=0">
+                    <i class="fa fa-filter fa-2x" aria-hidden="true"></i><br />
+                    Produtos
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="Con_Cliente?ope=1&cod=0">
+                    <i class="fa fa-credit-card fa-2x" aria-hidden="true"></i><br />
+                    Clientes
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="Con_Movto?ope=1&cod=0">
+                    <i class="fa fa-cubes fa-2x"
+                       aria-hidden="true"></i><br /> Movimento
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="Pro_NFCe?ope=1&cod=0">
+                    <i class="fa fa-money fa-2x"
+                       aria-hidden="true"></i><br /> Processo NFC-e
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="Con_Usuario?ope=1&cod=0">
+                    <i class="fa fa-user-circle-o fa-2x"
+                       aria-hidden="true"></i><br /> Usuários
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="Pro_Saida?ope=9&cod=999999">
+                    <i class="fa fa-sign-out fa-2x"
+                       aria-hidden="true"></i><br /> Saída
+                </a>
+            </li>
+        </ul>
+        <span class="navbar-text text-center">
+            <div class="lit-1">
+                @Funcoes.wksnomusu <br/><br />
+            </div>
+            <div class="lit-2">
+                @Funcoes.wksemausu <br />
+            </div>
+            <div class="lit-2">
+                @data
+            </div>
+</span>
+    </div>
+</nav>

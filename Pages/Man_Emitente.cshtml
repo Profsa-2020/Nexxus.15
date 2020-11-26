@@ -1,0 +1,332 @@
+﻿@page
+@using System.Data;
+@model Nexxus15.Pages.Man_EmitenteModel
+@{
+    string ope = TempData["ope"].ToString() == "3" ? "Eliminar" : "Salvar";
+    var cod_v = Convert.ToString(Convert.ToInt32(TempData["cod_v"]) + 1);
+    string operacao = TempData["ope"].ToString() + "_" + TempData["cod"].ToString();
+    var dados = TempData["est_l"];
+}
+@{
+    TempData["raz"] = "";
+    TempData["fan"] = "";
+    TempData["cep"] = "";
+    TempData["end"] = "";
+    TempData["num"] = "";
+    TempData["com"] = "";
+    TempData["bai"] = "";
+    TempData["cid"] = "";
+    TempData["est"] = "";
+    TempData["cel"] = "";
+    TempData["tel"] = "";
+    TempData["ema"] = "";
+    TempData["cnp"] = "";
+    TempData["ies"] = "";
+    TempData["imu"] = "";
+    TempData["obs"] = "";
+}
+<!DOCTYPE html>
+<html lang="pt_br">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="description" content="Profsa Informática - TipSoft - Emissão de NFC-e - Emitente" />
+    <meta name="author" content="Paulo Rogério Souza" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400" rel="stylesheet" type="text/css" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400" rel="stylesheet" type="text/css" />
+
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.css">
+
+    <link rel="shortcut icon" href="img/tipsoft.ico" />
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+            integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+            integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous">
+    </script>
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <script type="text/javascript" language="javascript"
+            src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <link href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
+
+    <script type="text/javascript" src="js/jquery.mask.min.js"></script>
+
+    <link href="css/nexxus15.css" rel="stylesheet" type="text/css" media="screen" />
+    <title>Emitente - TipSoft Sistemas - Emissão de NFC-e</title>
+</head>
+
+<script>
+    $(document).ready(function () {
+        var ope = $('#sal').text();
+        if (ope == "Eliminar") {
+            $('#sal').css("background-color", "red");
+        }
+
+        $('#est_v').change(function () {
+            var est = $('#est_v').val();
+            $.ajax({
+                url: '/?handler=Carrega_Cid',
+                type: 'GET',
+                dataType: 'text',
+                data: { est: est },
+                success: function (data) {
+                    $('#cid_v').empty().html(data);
+                }
+            });
+        });
+
+
+        $('#cnp_v').blur(function () {
+            var cgc = $('#cnp_v').val();
+            var cgc = cgc.replace(/[^0-9]/g, '');
+            if (cgc != '') {
+                $.ajax({
+                    url: 'https://www.receitaws.com.br/v1/cnpj/' + cgc,
+                    type: 'POST',
+                    dataType: 'jsonp',
+                    data: cgc,
+                    success: function (data) {
+                        if (data.nome != "") {
+                            if ($('#raz_v').val() == "") {
+                                $('#raz_v').val(data.nome.substring(0, 75));
+                            }
+                            if ($('#fan_v').val() == "") {
+                                $('#fan_v').val(data.fantasia.substring(0, 50));
+                            }
+                            if ($('#end_v').val() == "") {
+                                $('#end_v').val(data.logradouro.substring(0, 50));
+                            }
+                            if ($('#num_v').val() == "" || $('#num_v').val() == ".") {
+                                $('#num_v').val(data.numero);
+                            }
+                            if ($('#cep_v').val() == "" || $('#cep_v').val() == "-") {
+                                $('#cep_v').val(data.cep.replace('.', ''));
+                            }
+                            if ($('#bai_v').val() == "") {
+                                $('#bai_v').val(data.bairro.substring(0, 50));
+                            }
+                            if ($('#com_v').val() == "") {
+                                $('#com_v').val(data.complemento);
+                            }
+                            if ($('#cid_v').val() == "") {
+                                $('#cid_v').val(data.municipio);
+                            }
+                            if ($('#est_v').val() == "") {
+                                $('#est_v').val(data.uf);
+                            }
+                            if ($('#tel_v').val() == "") {
+                                $('#tel_v').val(data.telefone.substring(0, 15));
+                            }
+                            if ($('#ema_v').val() == "") {
+                                $('#ema_v').val(data.email);
+                            }
+                        }
+                    }
+                });
+            }
+        });
+
+        $('#cep_v').blur(function () {
+            var cep = $('#cep_v').val();
+            var cep = cep.replace(/[^0-9]/g, '');
+            if (cep != '') {
+                var url = '//viacep.com.br/ws/' + cep + '/json/';
+                $.getJSON(url, function (data) {
+                    if ("error" in data) {
+                        return;
+                    }
+                    if ($('#end_v').val() == "") {
+                        $('#end_v').val(data.logradouro.substring(0, 50));
+                    }
+                    if ($('#bai_v').val() == "") {
+                        $('#bai_v').val(data.bairro.substring(0, 50));
+                    }
+                    if ($('#cid_v').val() == "") {
+                        $('#cid_v').val(data.localidade);
+                    }
+                    if ($('#est_v').val() == "" || $('#est_v').val() == "**") {
+                        $('#est_v').val(data.uf);
+                    }
+                });
+            }
+        });
+
+        $('#sal').click(function () {
+            var ope = $('#sal').text();
+            if (ope == "Eliminar") {
+                let conf = confirm('Confirma exclusão definitiva deste emitente informado ?');
+                if (conf == false) {
+                    return false;
+                }
+            }
+        });
+
+    });
+</script>
+
+<body class="log-1">
+    <partial name="_Header" />
+    <div class="container">
+        <div class="qua-2">
+            <div class="row qua-3">
+                <div class="col-9 text-left">
+                    <span>Manutenção de Emitentes</span>
+                </div>
+                <div class="col-3 text-center">
+                    <form name="frmTelNov" action="~/Man_Emitente?ope=1&cod=0" method="POST">
+                        <div class="text-center">
+                            <button type="submit" class="bot-2" id="nov" name="novo"
+                                    title="Mostra campos para criar novo emitente no sistema">
+                                <i class="fa fa-plus-circle fa-1g" aria-hidden="true"></i><span> Novo </span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <br /><hr />
+                  <form id="frmTelMan" name="frmTelMan" action="" method="POST">
+                      <div class="row">
+                          <div class="col-md-5"></div>
+                          <div class="col-md-2">
+                              <label>Número</label>
+                              <input type="text" class="form-control text-center" maxlength="3" id="cod_v" name="cod_v"
+                                     value="@cod_v" disabled />
+                          </div>
+                          <div class="col-md-5"></div>
+                      </div>
+                      <div class="row">
+                          <div class="col-md-8">
+                              <label>Razão Social</label>
+                              <input type="text" class="form-control" maxlength="60" id="raz_v" name="raz_v"
+                                     value="@TempData["raz"].ToString()" required />
+                          </div>
+                          <div class="col-md-4">
+                              <label>Nome Fantasia</label>
+                              <input type="text" class="form-control" maxlength="60" id="fan_v" name="fan_v"
+                                     value="@TempData["fan"].ToString()" />
+                          </div>
+                      </div>
+                      <div class="row">
+                          <div class="col-md-3">
+                              <label>C.n.p.j.</label>
+                              <input type="text" class="form-control" maxlength="14" id="cnp_v" name="cnp_v"
+                                     value="@TempData["cnp"].ToString()" required />
+                          </div>
+                          <div class="col-md-7"></div>
+                          <div class="col-md-2">
+                              <label>C.e.p.</label>
+                              <input type="text" class="form-control text-center" maxlength="9" id="cep_v" name="cep_v"
+                                     value="@TempData["cep"].ToString()" required />
+                          </div>
+                      </div>
+                      <div class="row">
+                          <div class="col-md-6">
+                              <label>Endereço</label>
+                              <input type="text" class="form-control" maxlength="60" id="end_v" name="end_v"
+                                     value="@TempData["end"].ToString()" required />
+                          </div>
+                          <div class="col-md-2">
+                              <label>Número</label>
+                              <input type="text" class="form-control" maxlength="60" id="num_v" name="num_v"
+                                     value="@TempData["num"].ToString()" required />
+                          </div>
+                          <div class="col-md-4">
+                              <label>Complemento</label>
+                              <input type="text" class="form-control" maxlength="60" id="com_v" name="com_v"
+                                     value="@TempData["com"].ToString()" />
+                          </div>
+                      </div>
+                      <div class="row">
+                          <div class="col-md-6">
+                              <label>Bairro</label>
+                              <input type="text" class="form-control" maxlength="60" id="bai_v" name="bai_v"
+                                     value="@TempData["bai"].ToString()" />
+                          </div>
+                          <div class="col-md-2">
+                              <label>Estado</label>
+                              <select id="est_v" name="est_v" class="form-control">
+                                  <option value="**">UF</option>
+                                  @{ if (dados != null)
+                                      {
+                                          foreach (DataRow linha in ((System.Data.DataTable)dados).Rows)
+                                          {
+                                              <option value="@linha["Pk"].ToString()">@linha["Nome"].ToString()</option>
+                                          }
+                                      }
+                                  }
+                              </select>
+                          </div>
+                          <div class="col-md-4">
+                              <label>Cidade</label>
+                              <select id="cid_v" name="cid_v" class="form-control">
+
+                              </select>
+                          </div>
+                      </div>
+                      <div class="row">
+                          <div class="col-md-3">
+                              <label>Celular</label>
+                              <input type="text" class="form-control" maxlength="15" id="cel_v" name="cel_v"
+                                     value="@TempData["cel"].ToString()" required />
+                          </div>
+                          <div class="col-md-3">
+                              <label>Telefone</label>
+                              <input type="text" class="form-control" maxlength="15" id="tel_v" name="tel_v"
+                                     value="@TempData["tel"].ToString()" />
+                          </div>
+                          <div class="col-md-6">
+                              <label>E-Mail</label>
+                              <input type="text" class="form-control" maxlength="50" id="ema_v" name="ema_v"
+                                     value="@TempData["ema"].ToString()" />
+                          </div>
+                      </div>
+                      <div class="row">
+                          <div class="col-md-4">
+                              <label>Inscrição Estadual</label>
+                              <input type="text" class="form-control" maxlength="14" id="ies_v" name="ies_v"
+                                     value="@TempData["ies"].ToString()" required />
+                          </div>
+                          <div class="col-md-4"></div>
+                          <div class="col-md-4">
+                              <label>Inscrição Municipal</label>
+                              <input type="text" class="form-control" maxlength="14" id="imu_v" name="imu_v"
+                                     value="@TempData["imu"].ToString()" />
+                          </div>
+                      </div>
+
+
+                      <div class="row">
+                          <div class="col-md-12">
+                              <label>Observação</label>
+                              <textarea class="form-control" rows="3" id="obs_v" name="obs_v" maxlength="500">@TempData["obs"].ToString()</textarea>
+                          </div>
+                      </div>
+                      <br />
+                      <div class="row text-center">
+                          <div class="col-md-3"></div>
+                          <div class="col-md-6 text-center">
+                              <button type="submit" id="sal" name="sal" value="@operacao" class="bot-1">@ope</button>
+                          </div>
+                          <div class="col-md-3"></div>
+                      </div>
+                  </form>
+        </div>
+        <br />
+    </div>
+</body>
+
+</html>

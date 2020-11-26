@@ -1,0 +1,14 @@
+﻿@page
+@using System.Data;
+@model Nexxus15.Pages.AjaxModel
+@{ var dados = TempData["cid_v"]; }
+
+<option value="**">Selecione ...</option>
+@{ if (dados != null)
+    {
+        foreach (DataRow linha in ((System.Data.DataTable)dados).Rows)
+        {
+            <option value="@linha["codigo"].ToString()">@linha["Nome"].ToString()</option>
+        }
+    }
+}
