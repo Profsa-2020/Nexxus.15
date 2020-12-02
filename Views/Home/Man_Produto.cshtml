@@ -1,0 +1,373 @@
+﻿@page
+@using System.Data;
+@{
+    string des_p = TempData["ope_p"].ToString() != "3" ? "" : "disabled";
+    string ope_p = TempData["ope_p"].ToString() == "3" ? "Eliminar" : "Salvar";
+    string tip_p = TempData["ope_p"].ToString() + "_" + TempData["cod_p"].ToString();
+    var num_v = Convert.ToString(Convert.ToInt32(TempData["num_v"]) + 1);
+    var ncms = TempData["ncm_l"];
+    var cfops = TempData["cfo_l"];
+    var grupos = TempData["gru_l"];
+    var unidades = TempData["uni_l"];
+    var situacoes = TempData["sit_l"];
+}
+@{
+    if (TempData["ope_p"].ToString() == "1") {
+        TempData["des"] = "";
+        TempData["cod"] = "";
+        TempData["ean"] = "";
+        TempData["ncm"] = "";
+        TempData["cfo"] = "";
+        TempData["uni"] = "";
+        TempData["ati"] = "";
+        TempData["pre"] = "";
+        TempData["cst"] = "";
+        TempData["gru"] = "";
+        TempData["obs"] = "";
+    }
+    if (TempData["ope_p"].ToString() != "1")
+    {
+        num_v = TempData["cod_p"].ToString();
+    }
+
+}
+
+<!DOCTYPE html>
+<html lang="pt_br">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="description" content="Profsa Informática - TipSoft - Emissão de NFC-e - Produto" />
+    <meta name="author" content="Paulo Rogério Souza" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400" rel="stylesheet" type="text/css" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400" rel="stylesheet" type="text/css" />
+
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.css">
+
+    <link rel="shortcut icon" href="img/tipsoft.ico" />
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+            integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+            integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous">
+    </script>
+
+    <script type="text/javascript" src="../js/jquery.mask.min.js"></script>
+    <script type="text/javascript" src="../js/jquery.unobtrusive-ajax.js"></script>
+
+    <link href="../css/nexxus16.css" rel="stylesheet" type="text/css" media="screen" />
+    <title>Produto - TipSoft Sistemas - Emissão de NFC-e</title>
+</head>
+
+<script>
+    $(document).ready(function () {
+        var ope = $('#sal').text();
+        if (ope == "Eliminar") {
+            $('#sal').css("background-color", "red");
+        }
+
+        $('#sal').click(function () {
+            var ope = $('#sal').text();
+            if (ope == "Eliminar") {
+                let conf = confirm('Confirma exclusão definitiva deste produto informado ?');
+                if (conf == false) {
+                    $('#num_v').val("");
+                    $('#des_v').val("");
+                    $('#sal').css('cursor', 'not-allowed');
+                    $('#sal').attr('disabled', 'disabled');
+                    return false;
+                } else {
+                    $('#sal').css('cursor', 'not-allowed');
+                    $('#sal').attr('disabled', 'disabled');
+                }
+            } else {
+                let uni = $('#uni_v').val();
+                let sit = $('#cst_v').val();
+                let cfo = $('#cfo_v').val();
+                let ncm = $('#ncm_v').val();
+                if (uni == "**" || uni == "" || uni == null) {
+                    alert("Unidade de medida para o produto não foi informado !"); return false;
+                }
+               if (sit == "**" || sit == "" || sit == null) {
+                    alert("Situação tributária do produto não foi informada !"); return false;
+                }
+                if (cfo == "**" || cfo == "" || cfo == null) {
+                    alert("Número do C.f.o.p. para o produto não foi informado !"); return false;
+                }
+                if (ncm == "**" || ncm == "" || ncm == null) {
+                    alert("Número do N.c.m. para o produto não foi informado !"); return false;
+                }
+           }
+        });
+
+        $(function () {
+            $("#cep_v").mask("00000-000");
+            $("#pre_v").mask("000.000,00", { reverse: true });
+        });
+    });
+</script>
+
+<body class="log-1">
+    <partial name="_Header" />
+    <div class="container">
+        <div class="qua-2">
+            <div class="row qua-3">
+                <div class="col-9 text-left">
+                    <span>Manutenção de Produtos</span>
+                </div>
+                <div class="col-3 text-center">
+                    <form name="frmTelNov" action="Man_Produto?ope=1&cod=0" method="POST">
+                        <div class="text-center">
+                            <button type="submit" class="bot-2 lit-3" id="nov" name="novo"
+                                    title="Mostra campos para criar novo produto no sistema">
+                                <i class="fa fa-plus-circle fa-1g" aria-hidden="true"></i><span> Novo </span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div id="err-1" class="err-1">
+                @if (TempData["erro"] != null && Convert.ToString(TempData["erro"]) != "")
+                {
+                    @TempData["erro"];
+                }
+            </div>
+            <br />
+            <hr />
+            <form id="frmTelMan" name="frmTelMan" action="" method="POST">
+                <div class="row">
+                    <div class="col-md-5"></div>
+                    <div class="col-md-2">
+                        <label>Número</label>
+                        <input type="text" class="form-control text-center" maxlength="3" id="num_v" name="num_v"
+                               value="@num_v" disabled />
+                    </div>
+                    <div class="col-md-5"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <label>Descrição do Produto</label>
+                        <input type="text" class="form-control" maxlength="120" id="raz_v" name="des_v"
+                               value="@TempData["des"].ToString()" required @des_p />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4"></div>
+                    <div class="col-md-4">
+                        <label>Unidade de Medida</label>
+                        <select id="uni_v" name="uni_v" class="form-control" @des_p>
+                            @{if (TempData["uni"].ToString() == "")
+                                {
+                                    <option value="**" selected="selected">Selecione Unidade ...</option>
+                                }
+                            }
+                            @{ if (unidades != null)
+                                {
+                                    foreach (DataRow linha in ((System.Data.DataTable)unidades).Rows)
+                                    {
+                                        if (TempData["uni"].ToString() != linha["Pk"].ToString())
+                                        {
+                                            <option value="@linha["Pk"].ToString()">@linha["Descricao"].ToString()</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@linha["Pk"].ToString()" selected="selected">@linha["Descricao"].ToString()</option>
+                                        }
+                                    }
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-4"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-8">
+                        <label>Grupo de Produtos</label>
+                        <select id="gru_v" name="gru_v" class="form-control" @des_p>
+                            @{if (TempData["gru"].ToString() == "")
+                                {
+                                    <option value="**" selected="selected">Selecione Grupo ...</option>
+                                }
+                            }
+                            @{ if (grupos != null)
+                                {
+                                    foreach (DataRow linha in ((System.Data.DataTable)grupos).Rows)
+                                    {
+                                        if (TempData["gru"].ToString() != linha["Pk"].ToString())
+                                        {
+                                            <option value="@linha["Pk"].ToString()">@linha["Descricao"].ToString()</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@linha["Pk"].ToString()" selected="selected">@linha["Descricao"].ToString()</option>
+                                        }
+                                    }
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-2"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-10">
+                        <label>Situação Tributária</label>
+                        <select id="cst_v" name="cst_v" class="form-control" @des_p>
+                            @{if (TempData["cst"].ToString() == "")
+                                {
+                                    <option value="**" selected="selected">Selecione Situação ...</option>
+                                }
+                            }
+                            @{ if (situacoes != null)
+                                {
+                                    foreach (DataRow linha in ((System.Data.DataTable)situacoes).Rows)
+                                    {
+                                        if (TempData["cst"].ToString() != linha["Pk"].ToString())
+                                        {
+                                            string cod_des = linha["Codigo"].ToString() + "-" + linha["Descricao"].ToString();
+                                            <option value="@linha["Pk"].ToString()">@cod_des</option>
+                                        }
+                                        else
+                                        {
+                                            string cod_des = linha["Codigo"].ToString() + "-" + linha["Descricao"].ToString();
+                                            <option value="@linha["Pk"].ToString()" selected="selected">@cod_des</option>
+                                        }
+                                    }
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-1"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-10">
+                        <label>Número de CFOP</label>
+                        <select id="cfo_v" name="cfo_v" class="form-control" @des_p>
+                            @{if (TempData["cfo"].ToString() == "")
+                                {
+                                    <option value="**" selected="selected">Selecione o Cfop ...</option>
+                                }
+                            }
+                            @{ if (cfops != null)
+                                {
+                                    foreach (DataRow linha in ((System.Data.DataTable)cfops).Rows)
+                                    {
+                                        if (TempData["cfo"].ToString() != linha["Pk"].ToString())
+                                        {
+                                            string cod_des = linha["Codigo"].ToString() + "-" + linha["Descricao"].ToString();
+                                            <option value="@linha["Pk"].ToString()">@cod_des</option>
+                                        }
+                                        else
+                                        {
+                                            string cod_des = linha["Codigo"].ToString() + "-" + linha["Descricao"].ToString();
+                                            <option value="@linha["Pk"].ToString()" selected="selected">@cod_des</option>
+                                        }
+                                    }
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-1"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-10">
+                        <label>Número de NCM</label>
+                        <select id="ncm_v" name="ncm_v" class="form-control" @des_p>
+                            @{if (TempData["ncm"].ToString() == "")
+                                {
+                                    <option value="**" selected="selected">Selecione o Ncm ...</option>
+                                }
+                            }
+                            @{ if (ncms != null)
+                                {
+                                    foreach (DataRow linha in ((System.Data.DataTable)ncms).Rows)
+                                    {
+                                        if (TempData["ncm"].ToString() != linha["Pk"].ToString())
+                                        {
+                                            string cod_des = linha["Codigo"].ToString() + "-" + linha["Descricao"].ToString();
+                                            <option value="@linha["Pk"].ToString()">@cod_des</option>
+                                        }
+                                        else
+                                        {
+                                            string cod_des = linha["Codigo"].ToString() + "-" + linha["Descricao"].ToString();
+                                            <option value="@linha["Pk"].ToString()" selected="selected">@cod_des</option>
+                                        }
+                                    }
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-1"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <br />
+                        @{ if (TempData["ati"].ToString() == "Não")
+                            {
+                                <input type="checkbox" id="ati_v" name="ati_v" value="Sim" @des_p />
+                            }
+                            else
+                            {
+                                <input type="checkbox" id="ati_v" name="ati_v" value="Sim" checked @des_p />
+                            }
+                        }
+                        <label for="ati_v">Produto ativo</label>
+                    </div>
+                    <div class="col-md-3">
+                        <label>Número EAN</label>
+                        <input type="text" class="form-control text-center" maxlength="14" id="ean_v" name="ean_v"
+                               value="@TempData["ean"].ToString()" required @des_p />
+                    </div>
+                    <div class="col-md-3">
+                        <label>Código externo</label>
+                        <input type="text" class="form-control text-center" maxlength="50" id="cod_v" name="cod_v"
+                               value="@TempData["cod"].ToString()" required @des_p />
+                    </div>
+                    <div class="col-md-3">
+                        <label>Preço base</label>
+                        <input type="text" class="form-control text-center" maxlength="50" id="pre_v" name="pre_v"
+                               value="@TempData["pre"].ToString()" required @des_p />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <label>Observação</label>
+                        <textarea class="form-control" rows="3" id="obs_v" name="obs_v" maxlength="999" @des_p>@TempData["obs"].ToString()</textarea>
+                    </div>
+                </div>
+                <br />
+                <div class="row text-center">
+                    <div class="col-md-3"></div>
+                    <div class="col-md-6 text-center">
+                        <button type="submit" id="sal" name="sal" value="@tip_p" class="bot-1">@ope_p</button>
+                    </div>
+                    <div class="col-md-3"></div>
+                </div>
+                <br />
+                <div class="row text-center">
+                    <div class="col-md-12">
+                        <span class="tit-2"><a href="Con_Produto">Voltar</a></span>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <br />
+    </div>
+</body>
+
+</html>

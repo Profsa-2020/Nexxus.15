@@ -1,0 +1,90 @@
+﻿@page
+@model DadosModel
+
+<!DOCTYPE html>
+<html lang="pt_br">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="description" content="Profsa Informática - TIPSOFT - Emissão de NFC-e" />
+    <meta name="author" content="Paulo Rogério Souza" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400" rel="stylesheet" type="text/css" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400" rel="stylesheet" type="text/css" />
+
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.css">
+
+    <link rel="shortcut icon" href="img/tipsoft.ico" />
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+
+    <link href="../css/nexxus16.css" rel="stylesheet" type="text/css" media="screen" />
+    <title>Login - TipSoft Sistemas - Emissão de NFC-e</title>
+</head>
+
+<script>
+    $(document).ready(function () {
+        var sta = $('#err-1').text().trim();
+        if (sta != "") {
+            $('#err-1').css("display", "block");
+            $('#err-1').css("background-color", "red");
+            $(".err-1").delay(4000).fadeOut(2000);
+        }
+    });
+</script>
+
+<body class="log-1">
+    <form class="qua-1 animated bounceInDown" name="frmLogin" action="" method="POST">
+        <div class="row">
+            <a href="https://www.tipsoft.com.br/">
+                <img class="ima-1" src="../img/log-2.png" alt="Logotipo da empresa Tip Soft Sistemas"
+                     title="Acesso ao site principal da empresa Tip Soft Sistemas" />
+            </a>
+        </div>
+        <div id="err-1" class="err-1">
+            @if (TempData["erro"] != null && Convert.ToString(TempData["erro"]) != "")
+            {
+                @TempData["erro"];
+            }
+        </div>
+        <div class="row">
+            <div class="col s1"></div>
+            <div class="input-field col s10">
+                <i class="material-icons prefix">email</i>
+                <input type="email" class="text-center" id="ema" name="email" maxlength="50" required>
+                <label for="nome">E-mail do usuário para acesso ...</label>
+            </div>
+            <div class="col s1"></div>
+        </div>
+
+        <div class="row">
+            <div class="col s1"></div>
+            <div class="input-field col s10">
+                <i class="material-icons prefix">lock</i>
+                <input type="password" class="text-center" id="sen" name="senha" maxlength="15" required>
+                <label for="senha">Senha de acesso ao sistema ...</label>
+            </div>
+            <div class="col s1"></div>
+        </div>
+
+        <div class="row">
+            <input class="bot-1" type="submit" id="ent" name="entrar" value="Entrar" />
+            <br /><br />
+            <input type="checkbox" id="lem" name="lembrete" value="S" />
+            <label class="tit-1" for="lem">Lembrar Login</label>
+            <br />
+            <span class="tit-2"><a href="/Home/Recover">Esqueci a senha</a></span>
+        </div>
+
+    </form>
+</body>
+
+</html>

@@ -1,0 +1,493 @@
+﻿@page
+@using System.Data;
+@using System.IO;
+@{
+    string des_p = TempData["ope_p"].ToString() != "3" ? "" : "disabled";
+    string ope_p = TempData["ope_p"].ToString() == "3" ? "Eliminar" : "Salvar";
+    string tip_p = TempData["ope_p"].ToString() + "_" + TempData["cod_p"].ToString();
+    var num_v = Convert.ToString(Convert.ToInt32(TempData["num_v"]) + 1);
+    var estados = TempData["est_l"];
+    var cidades = TempData["cid_l"];
+}
+@{
+    if (TempData["ope_p"].ToString() == "1")
+    {
+        TempData["raz"] = "";
+        TempData["fan"] = "";
+        TempData["cep"] = "";
+        TempData["end"] = "";
+        TempData["nro"] = "";
+        TempData["com"] = "";
+        TempData["bai"] = "";
+        TempData["cid"] = "";
+        TempData["est"] = "";
+        TempData["cel"] = "";
+        TempData["tel"] = "";
+        TempData["ema"] = "";
+        TempData["cnp"] = "";
+        TempData["ies"] = "";
+        TempData["imu"] = "";
+        TempData["ati"] = "";
+        TempData["obs"] = "";
+    }
+    if (TempData["ope_p"].ToString() != "1")
+    {
+        num_v = TempData["cod_p"].ToString();
+    }
+    string cer_w = "";
+    string log_w = "";
+    if (TempData["cnp"] != "")
+    {
+        if (System.IO.File.Exists(DadosModel.wkscamweb + "\\imagens\\" + "Log_" + TempData["cnp"] + ".jpg") == true)
+        {
+            log_w = "../imagens/Log_" + TempData["cnp"] + ".jpg";
+        }
+        if (System.IO.File.Exists(DadosModel.wkscamweb + "\\imagens\\" + "Log_" + TempData["cnp"] + ".png") == true)
+        {
+            log_w = "../imagens/Log_" + TempData["cnp"] + ".png";
+        }
+        if (System.IO.File.Exists(DadosModel.wkscamweb + "\\imagens\\" + "Log_" + TempData["cnp"] + ".jpeg") == true)
+        {
+            log_w = "../imagens/Log_" + TempData["cnp"] + ".jpeg";
+        }
+    }
+    if (TempData["cnp"] != "")
+    {
+        if (System.IO.File.Exists(DadosModel.wkscamweb + "\\imagens\\" + "Cer_" + TempData["cnp"] + ".pfx") == true)
+        {
+            cer_w = "Cer_" + TempData["cnp"] + ".pfx";
+        }
+    }
+}
+
+<!DOCTYPE html>
+<html lang="pt_br">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="description" content="Profsa Informática - TipSoft - Emissão de NFC-e - Emitente" />
+    <meta name="author" content="Paulo Rogério Souza" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400" rel="stylesheet" type="text/css" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400" rel="stylesheet" type="text/css" />
+
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.css">
+
+    <link rel="shortcut icon" href="img/tipsoft.ico" />
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+            integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+            integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous">
+    </script>
+
+    <script type="text/javascript" src="../js/jquery.mask.min.js"></script>
+    <script type="text/javascript" src="../js/jquery.unobtrusive-ajax.js"></script>
+
+    <link href="../css/nexxus16.css" rel="stylesheet" type="text/css" media="screen" />
+    <title>Emitente - TipSoft Sistemas - Emissão de NFC-e</title>
+</head>
+
+<script>
+    $(document).ready(function () {
+        var ope = $('#sal').text();
+        if (ope == "Eliminar") {
+            $('#sal').css("background-color", "red");
+        }
+
+        $('#log_v').bind("click", function () {
+            $('#log_janela').click();
+        });
+
+        $('#log_janela').change(function () {
+            var path = $('#log_janela').val();
+            var ima = $(this)[0].files[0];
+            var fileReader = new FileReader();
+            fileReader.onloadend = function () {
+                $('#log_imagem').attr('src', fileReader.result);
+            }
+            fileReader.readAsDataURL(ima);
+        });
+
+        $('#cer_v').bind("click", function () {
+            $('#cer_janela').click();
+        });
+
+        $('#cer_janela').change(function () {
+            var nome = $('#cer_janela').val();
+            $('#cer_n').text(nome);
+        });
+
+        $('#est_v').change(function () {
+            var est = $('#est_v').val();
+            $.ajax({
+                url: '@Url.Action("Carrega_Cid", "TipSoft")',
+                type: 'GET',
+                dataType: 'text',
+                data: { est: est },
+                success: function (data) {
+                    $('#cid_v').empty().html(data);
+                }
+            });
+        });
+
+
+        $('#cnp_v').blur(function () {
+            var cgc = $('#cnp_v').val();
+            if (cgc != "") {
+                var cgc = cgc.replace(/[^0-9]/g, '');
+                $.ajax({
+                    url: '@Url.Action("Digito_Cnpj", "TipSoft")',
+                    type: 'GET',
+                    dataType: 'text',
+                    data: { cgc: cgc },
+                    success: function (data) {
+                        if (data == "2") {
+                            cgc = ''; $('#cnp_v').val('');
+                            alert("Dígito de controle do C.n.p.j. informado não está correto");
+                        }
+                    }
+                });
+            }
+
+            if (cgc != '') {
+                $.ajax({
+                    url: 'https://www.receitaws.com.br/v1/cnpj/' + cgc,
+                    type: 'POST',
+                    dataType: 'jsonp',
+                    data: cgc,
+                    success: function (data) {
+                        if (data.nome != "") {
+                            if ($('#raz_v').val() == "") {
+                                $('#raz_v').val(data.nome.substring(0, 75));
+                            }
+                            if ($('#fan_v').val() == "") {
+                                $('#fan_v').val(data.fantasia.substring(0, 50));
+                            }
+                            if ($('#end_v').val() == "") {
+                                $('#end_v').val(data.logradouro.substring(0, 50));
+                            }
+                            if ($('#nro_v').val() == "" || $('#nro_v').val() == ".") {
+                                $('#nro_v').val(data.numero);
+                            }
+                            if ($('#cep_v').val() == "" || $('#cep_v').val() == "-") {
+                                $('#cep_v').val(data.cep.replace('.', ''));
+                            }
+                            if ($('#bai_v').val() == "") {
+                                $('#bai_v').val(data.bairro.substring(0, 50));
+                            }
+                            if ($('#com_v').val() == "") {
+                                $('#com_v').val(data.complemento);
+                            }
+                            if ($('#cid_v').val() == "") {
+                                $('#cid_v').val(data.municipio);
+                            }
+                            if ($('#est_v').val() == "") {
+                                $('#est_v').val(data.uf);
+                            }
+                            if ($('#tel_v').val() == "") {
+                                $('#tel_v').val(data.telefone.substring(0, 15));
+                            }
+                            if ($('#ema_v').val() == "") {
+                                $('#ema_v').val(data.email);
+                            }
+                        }
+                    }
+                });
+            }
+        });
+
+        $('#cep_v').blur(function () {
+            var cep = $('#cep_v').val();
+            var cep = cep.replace(/[^0-9]/g, '');
+            if (cep != '') {
+                var url = '//viacep.com.br/ws/' + cep + '/json/';
+                $.getJSON(url, function (data) {
+                    if ("error" in data) {
+                        return;
+                    }
+                    if ($('#end_v').val() == "") {
+                        $('#end_v').val(data.logradouro.substring(0, 50));
+                    }
+                    if ($('#bai_v').val() == "") {
+                        $('#bai_v').val(data.bairro.substring(0, 50));
+                    }
+                    if ($('#cid_v').val() == "") {
+                        $('#cid_v').val(data.localidade);
+                    }
+                    if ($('#est_v').val() == "" || $('#est_v').val() == "**") {
+                        $('#est_v').val(data.uf);
+                    }
+                });
+            }
+        });
+
+        $('#sal').click(function () {
+            var ope = $('#sal').text();
+            if (ope == "Eliminar") {
+                let conf = confirm('Confirma exclusão definitiva deste emitente informado ?');
+                if (conf == false) {
+                    $('#num_v').val("");
+                    $('#raz_v').val("");
+                    $('#fan_v').val("");
+                    $('#sal').css('cursor', 'not-allowed');
+                    $('#sal').attr('disabled', 'disabled');
+                    return false;
+                } else {
+                    $('#sal').css('cursor', 'not-allowed');
+                    $('#sal').attr('disabled', 'disabled');
+                }
+            } else {
+                let est = $('#est_v').val();
+                let cid = $('#cid_v').val();
+                if (est == "**" || est == "" || est == null) {
+                    alert("Estado da Federação do emitente não foi informado !"); return false;
+                }
+                if (cid == "**" || cid == "" || cid == null) {
+                    alert("Cidade do emitente para NFC-e não foi informada !"); return false;
+                }
+            }
+        });
+
+        $(function () {
+            $("#cep_v").mask("00000-000");
+            $("#cnp_v").mask("00.000.000/0000-00");
+            $("#num_v").mask("000.000", { reverse: true });
+            $("#nro_v").mask("000.000", { reverse: true });
+        });
+    });
+</script>
+
+<body class="log-1">
+    <partial name="_Header" />
+    <div class="container">
+        <div class="qua-2">
+            <div class="row qua-3">
+                <div class="col-9 text-left">
+                    <span>Manutenção de Emitentes</span>
+                </div>
+                <div class="col-3 text-center">
+                    <form name="frmTelNov" action="Man_Emitente?ope=1&cod=0" method="POST">
+                        <div class="text-center">
+                            <button type="submit" class="bot-2 lit-3" id="nov" name="novo"
+                                    title="Mostra campos para criar novo emitente no sistema">
+                                <i class="fa fa-plus-circle fa-1g" aria-hidden="true"></i><span> Novo </span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div id="err-1" class="err-1">
+                @if (TempData["erro"] != null && Convert.ToString(TempData["erro"]) != "")
+                {
+                    @TempData["erro"];
+                }
+            </div>
+            <br />
+            <hr />
+            <form id="frmTelMan" name="frmTelMan" action="" method="POST" enctype="multipart/form-data">
+                <div class="row">
+                    <div class="col-md-5"></div>
+                    <div class="col-md-2">
+                        <label>Número</label>
+                        <input type="text" class="form-control text-center" maxlength="3" id="num_v" name="num_v"
+                               value="@num_v" disabled />
+                    </div>
+                    <div class="col-md-5"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">
+                        <label>Razão Social</label>
+                        <input type="text" class="form-control" maxlength="60" id="raz_v" name="raz_v"
+                               value="@TempData["raz"].ToString()" required @des_p />
+                    </div>
+                    <div class="col-md-4">
+                        <label>Nome Fantasia</label>
+                        <input type="text" class="form-control" maxlength="60" id="fan_v" name="fan_v"
+                               value="@TempData["fan"].ToString()" required @des_p />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label>C.n.p.j.</label>
+                        <input type="text" class="form-control text-center" maxlength="14" id="cnp_v" name="cnp_v"
+                               value="@TempData["cnp"].ToString()" required @des_p />
+                    </div>
+                    <div class="col-md-2"></div>
+                    <div class="col-md-3">
+                        <br />
+                        @{ if (TempData["ati"].ToString() == "Não")
+                            {
+                                <input type="checkbox" id="ati_v" name="ati_v" value="Sim" @des_p />
+                            }
+                            else
+                            {
+                                <input type="checkbox" id="ati_v" name="ati_v" value="Sim" checked @des_p />
+                            }
+                        }
+                        <label for="ati_v">Emitente ativo</label>
+                    </div>
+                    <div class="col-md-2"></div>
+                    <div class="col-md-2">
+                        <label>C.e.p.</label>
+                        <input type="text" class="form-control text-center" maxlength="9" id="cep_v" name="cep_v"
+                               value="@TempData["cep"].ToString()" required @des_p />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Endereço</label>
+                        <input type="text" class="form-control" maxlength="60" id="end_v" name="end_v"
+                               value="@TempData["end"].ToString()" required @des_p />
+                    </div>
+                    <div class="col-md-2">
+                        <label>Número</label>
+                        <input type="text" class="form-control" maxlength="60" id="nro_v" name="nro_v"
+                               value="@TempData["nro"].ToString()" required @des_p />
+                    </div>
+                    <div class="col-md-4">
+                        <label>Complemento</label>
+                        <input type="text" class="form-control" maxlength="60" id="com_v" name="com_v"
+                               value="@TempData["com"].ToString()" @des_p />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Bairro</label>
+                        <input type="text" class="form-control" maxlength="60" id="bai_v" name="bai_v"
+                               value="@TempData["bai"].ToString()" required @des_p />
+                    </div>
+                    <div class="col-md-2">
+                        <label>Estado</label>
+                        <select id="est_v" name="est_v" class="form-control" @des_p>
+                            @{if (TempData["est"].ToString() == "")
+                                {
+                                    <option value="**" selected="selected">Selecione UF ...</option>
+                                }
+                            }
+                            @{ if (estados != null)
+                                {
+                                    foreach (DataRow linha in ((System.Data.DataTable)estados).Rows)
+                                    {
+                                        if (TempData["est"].ToString() != linha["Pk"].ToString())
+                                        {
+                                            <option value="@linha["Pk"].ToString()">@linha["Nome"].ToString()</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@linha["Pk"].ToString()" selected="selected">@linha["Nome"].ToString()</option>
+                                        }
+                                    }
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label>Cidade</label>
+                        <select id="cid_v" name="cid_v" class="form-control" @des_p>
+                            @{if (TempData["cid"].ToString() == "")
+                                {
+                                    <option value="**" selected="selected">Selecione a Cidade ...</option>
+                                }
+                            }
+                            @{ if (cidades != null)
+                                {
+                                    foreach (DataRow linha in ((System.Data.DataTable)cidades).Rows)
+                                    {
+                                        if (TempData["cid"].ToString() != linha["Pk"].ToString())
+                                        {
+                                            <option value="@linha["Pk"].ToString()">@linha["Nome"].ToString()</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@linha["Pk"].ToString()" selected="selected">@linha["Nome"].ToString()</option>
+                                        }
+                                    }
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label>Celular</label>
+                        <input type="text" class="form-control" maxlength="15" id="cel_v" name="cel_v"
+                               value="@TempData["cel"].ToString()" required @des_p />
+                    </div>
+                    <div class="col-md-3">
+                        <label>Telefone</label>
+                        <input type="text" class="form-control" maxlength="15" id="tel_v" name="tel_v"
+                               value="@TempData["tel"].ToString()" @des_p />
+                    </div>
+                    <div class="col-md-6">
+                        <label>E-Mail</label>
+                        <input type="email" class="form-control" maxlength="50" id="ema_v" name="ema_v"
+                               value="@TempData["ema"].ToString()" required @des_p />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label>Inscrição Estadual</label>
+                        <input type="text" class="form-control" maxlength="14" id="ies_v" name="ies_v"
+                               value="@TempData["ies"].ToString()" required @des_p />
+                    </div>
+                    <div class="col-md-2 text-center">
+                        <label>Logotipo</label><br />
+                        <i id="log_v" class="cur-1 fa fa-picture-o fa-3x" aria-hidden="true"></i>
+                    </div>
+                    <div class="col-md-2 text-center">
+                        <label>Certificado</label><br />
+                        <i id="cer_v" class="cur-1 fa fa-handshake-o fa-3x" aria-hidden="true"></i><br />
+                        <label id="cer_n">@cer_w</label>
+                    </div>
+                    <div class="col-md-4">
+                        <label>Inscrição Municipal</label>
+                        <input type="text" class="form-control" maxlength="14" id="imu_v" name="imu_v"
+                               value="@TempData["imu"].ToString()" @des_p />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <label>Observação</label>
+                        <textarea class="form-control" rows="3" id="obs_v" name="obs_v" maxlength="500" @des_p>@TempData["obs"].ToString()</textarea>
+                    </div>
+                </div>
+                <br />
+                <div class="row text-center">
+                    <div class="col-md-3"></div>
+                    <div class="col-md-6 text-center">
+                        <button type="submit" id="sal" name="sal" value="@tip_p" class="bot-1">@ope_p</button>
+                    </div>
+                    <div class="col-md-3"></div>
+                </div>
+                <br />
+                <div class="row text-center">
+                    <div class="col-md-12">
+                        <img id="log_imagem" class="img-fluid" src="@log_w" />
+                    </div>
+                </div>
+                <br />
+                <div class="row text-center">
+                    <div class="col-md-12">
+                        <span class="tit-2"><a href="Con_Emitente">Voltar</a></span>
+                    </div>
+                </div>
+                <input name="arq-cer" type="file" id="cer_janela" class="bot-3" accept=".pfx" />
+                <input name="arq-log" type="file" id="log_janela" class="bot-3" accept=".jpg, .png, .jpeg" />
+            </form>
+        </div>
+        <br />
+    </div>
+</body>
+
+</html>

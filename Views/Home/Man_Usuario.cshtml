@@ -1,0 +1,312 @@
+﻿@page
+@using System.Data;
+@{
+    string des_p = TempData["ope_p"].ToString() != "3" ? "" : "disabled";
+    string ope_p = TempData["ope_p"].ToString() == "3" ? "Eliminar" : "Salvar";
+    string tip_p = TempData["ope_p"].ToString() + "_" + TempData["cod_p"].ToString();
+    var num_v = Convert.ToString(Convert.ToInt32(TempData["num_v"]) + 1);
+    var emitentes = TempData["emi_l"];
+}
+@{
+    if (TempData["ope_p"].ToString() == "1") {
+        TempData["nme"] = "";
+        TempData["com"] = "";
+        TempData["ati"] = "";
+        TempData["sen"] = "";
+        TempData["pas"] = "";
+        TempData["obs"] = "";
+        TempData["cai"] = "";
+        TempData["end"] = "";
+        TempData["ete"] = "";
+        TempData["cha"] = "";
+        TempData["adm"] = "0";
+        TempData["nfc"] = "0";
+        TempData["emi"] = "0";
+    }
+    if (TempData["ope_p"].ToString() != "1")
+    {
+        num_v = TempData["cod_p"].ToString();
+    }
+
+}
+
+<!DOCTYPE html>
+<html lang="pt_br">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="description" content="Profsa Informática - TipSoft - Emissão de NFC-e - Usuario" />
+    <meta name="author" content="Paulo Rogério Souza" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400" rel="stylesheet" type="text/css" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400" rel="stylesheet" type="text/css" />
+
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.css">
+
+    <link rel="shortcut icon" href="img/tipsoft.ico" />
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+            integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+            integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous">
+    </script>
+
+    <script type="text/javascript" src="../js/jquery.mask.min.js"></script>
+    <script type="text/javascript" src="../js/jquery.unobtrusive-ajax.js"></script>
+
+    <link href="../css/nexxus16.css" rel="stylesheet" type="text/css" media="screen" />
+    <title>Usuario - TipSoft Sistemas - Emissão de NFC-e</title>
+</head>
+
+<script>
+    $(document).ready(function () {
+        var ope = $('#sal').text();
+        if (ope == "Eliminar") {
+            $('#sal').css("background-color", "red");
+        }
+
+        $('#sal').click(function () {
+            var ope = $('#sal').text();
+            if (ope == "Eliminar") {
+                let conf = confirm('Confirma exclusão definitiva deste usuário informado ?');
+                if (conf == false) {
+                    $('#num_v').val("");
+                    $('#raz_v').val("");
+                    $('#fan_v').val("");
+                    $('#sal').css('cursor', 'not-allowed');
+                    $('#sal').attr('disabled', 'disabled');
+                    return false;
+                } else {
+                    $('#sal').css('cursor', 'not-allowed');
+                    $('#sal').attr('disabled', 'disabled');
+                }
+            } else {
+                let sen = $('#sen_v').val();
+                let pas = $('#pas_v').val();
+                if (sen != pas) {
+                    alert("Senha e confirmação não podem ser diferentes, lamento !"); return false;
+                }
+            }
+        });
+
+        $(function () {
+            $("#cai_v").mask("000");
+        });
+    });
+</script>
+
+<body class="log-1">
+    <partial name="_Header" />
+    <div class="container">
+        <div class="qua-2">
+            <div class="row qua-3">
+                <div class="col-9 text-left">
+                    <span>Manutenção de Usuários</span>
+                </div>
+                <div class="col-3 text-center">
+                    <form name="frmTelNov" action="Man_Usuario?ope=1&cod=0" method="POST">
+                        <div class="text-center">
+                            <button type="submit" class="bot-2 lit-3" id="nov" name="novo"
+                                    title="Mostra campos para criar novo usuário no sistema">
+                                <i class="fa fa-plus-circle fa-1g" aria-hidden="true"></i><span> Novo </span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div id="err-1" class="err-1">
+                @if (TempData["erro"] != null && Convert.ToString(TempData["erro"]) != "")
+                {
+                    @TempData["erro"];
+                }
+            </div>
+            <br />
+            <hr />
+            <form id="frmTelMan" name="frmTelMan" action="" method="POST">
+                <div class="row">
+                    <div class="col-md-5"></div>
+                    <div class="col-md-2">
+                        <label>Número</label>
+                        <input type="text" class="form-control text-center" maxlength="3" id="num_v" name="num_v"
+                               value="@num_v" disabled />
+                    </div>
+                    <div class="col-md-5"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3"></div>
+                    <div class="col-md-6">
+                        <label>Nome do Usuário</label>
+                        <input type="text" class="form-control" maxlength="60" id="nom_v" name="nom_v"
+                               value="@TempData["nme"].ToString()" required @des_p />
+                    </div>
+                    <div class="col-md-3"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-8">
+                        <label>Nome Completo</label>
+                        <input type="text" class="form-control" maxlength="60" id="com_v" name="com_v"
+                               value="@TempData["com"].ToString()" required @des_p />
+                    </div>
+                    <div class="col-md-2"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4"></div>
+                    <div class="col-md-4">
+                        <label>Senha de Acesso</label>
+                        <input type="password" class="form-control text-center" maxlength="30" id="sen_v" name="sen_v"
+                               value="@TempData["sen"].ToString()" required @des_p />
+                    </div>
+                    <div class="col-md-4"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4"></div>
+                    <div class="col-md-4">
+                        <label>Confirme a Senha</label>
+                        <input type="password" class="form-control text-center" maxlength="30" id="pas_v" name="pas_v"
+                               value="@TempData["pas"].ToString()" required @des_p />
+                    </div>
+                    <div class="col-md-4"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-5"></div>
+                    <div class="col-md-2">
+                        <label>Número do Caixa</label>
+                        <input type="text" class="form-control text-center" maxlength="3" id="cai_v" name="cai_v"
+                               value="@TempData["cai"].ToString()" required @des_p />
+                    </div>
+                    <div class="col-md-5"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-8">
+                        <label>E-Mail</label>
+                        <input type="email" class="form-control text-center" maxlength="50" id="ema_v" name="ema_v"
+                               value="@TempData["end"].ToString()" required @des_p />
+                    </div>
+                    <div class="col-md-2"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-8">
+                        <label>Emitente</label>
+                        <select id="ete_v" name="ete_v" class="form-control" @des_p>
+                            @{if (TempData["ete"].ToString() == "")
+                                {
+                                    <option value="0" selected="selected">Selecione o Emitente ...</option>
+                                }
+                            }
+                            @{ if (emitentes != null)
+                                {
+                                    foreach (DataRow linha in ((System.Data.DataTable)emitentes).Rows)
+                                    {
+                                        if (TempData["ete"].ToString() != linha["Pk"].ToString())
+                                        {
+                                            <option value="@linha["Pk"].ToString()">@linha["RazaoSocial"].ToString()</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@linha["Pk"].ToString()" selected="selected">@linha["RazaoSocial"].ToString()</option>
+                                        }
+                                    }
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-2"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <br />
+                        @{ if (TempData["ati"].ToString() == "Não")
+                            {
+                                <input type="checkbox" id="ati_v" name="ati_v" value="Sim" @des_p />
+                            }
+                            else
+                            {
+                                <input type="checkbox" id="ati_v" name="ati_v" value="Sim" checked @des_p />
+                            }
+                        }
+                        <label for="ati_v">Usuário ativo</label>
+                    </div>
+                    <div class="col-md-3">
+                        <br />
+                        @{ if (TempData["adm"].ToString() == "0")
+                            {
+                                <input type="checkbox" id="adm_v" name="adm_v" value="1" @des_p />
+                            }
+                            else
+                            {
+                                <input type="checkbox" id="adm_v" name="adm_v" value="1" checked @des_p />
+                            }
+                        }
+                        <label for="adm_v">Administrador</label>
+                    </div>
+                    <div class="col-md-3">
+                        <br />
+                        @{ if (TempData["nfc"].ToString() == "0")
+                            {
+                                <input type="checkbox" id="nfc_v" name="nfc_v" value="1" @des_p />
+                            }
+                            else
+                            {
+                                <input type="checkbox" id="nfc_v" name="nfc_v" value="1" checked @des_p />
+                            }
+                        }
+                        <label for="nfc_v">Emite NFC-e</label>
+                    </div>
+                    <div class="col-md-3">
+                        <br />
+                        @{ if (TempData["emi"].ToString() == "0")
+                            {
+                                <input type="checkbox" id="emi_v" name="emi_v" value="1" @des_p />
+                            }
+                            else
+                            {
+                                <input type="checkbox" id="emi_v" name="emi_v" value="1" checked @des_p />
+                            }
+                        }
+                        <label for="emi_v">Acesso à Emitente</label>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <label>Observação</label>
+                        <textarea class="form-control" rows="3" id="obs_v" name="obs_v" maxlength="500" @des_p>@TempData["obs"].ToString()</textarea>
+                    </div>
+                </div>
+                <br />
+                <div class="row text-center">
+                    <div class="col-md-3"></div>
+                    <div class="col-md-6 text-center">
+                        <button type="submit" id="sal" name="sal" value="@tip_p" class="bot-1">@ope_p</button>
+                    </div>
+                    <div class="col-md-3"></div>
+                </div>
+                <br />
+                <div class="row text-center">
+                    <div class="col-md-12">
+                        <span class="tit-2"><a href="Con_Usuario">Voltar</a></span>
+                    </div>
+                </div>
+                <input name="num_w" type="hidden" value="@num_v" />
+                <input name="cha_w" type="hidden" value="@TempData["cha"].ToString()" />
+            </form>
+        </div>
+        <br />
+    </div>
+</body>
+
+</html>
