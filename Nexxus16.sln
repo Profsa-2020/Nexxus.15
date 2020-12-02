@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30523.141
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexxus16", "Nexxus16.csproj", "{077A1F91-1CEC-49B9-9394-DB4A7F7080E7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{077A1F91-1CEC-49B9-9394-DB4A7F7080E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{077A1F91-1CEC-49B9-9394-DB4A7F7080E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{077A1F91-1CEC-49B9-9394-DB4A7F7080E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{077A1F91-1CEC-49B9-9394-DB4A7F7080E7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {33C3514F-5AA4-402B-8F14-4DE90E2AF62A}
+	EndGlobalSection
+EndGlobal

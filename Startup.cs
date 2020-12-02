@@ -8,12 +8,12 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Nexxus16.Models;
 
-namespace Nexxus15
+namespace Nexxus16
 {
     public class Startup
     {
-        public const string SessionKeyName = "_Name";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -24,17 +24,11 @@ namespace Nexxus15
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
-            services.AddRazorPages();
-            services.AddDistributedMemoryCache();
-            services.AddSession();  // Podesse configurar o tempo de duração aqui, entre outras coisas ...
-
+            services.AddControllersWithViews();
             string coneccao = Configuration.GetSection("ConnectionStrings")["DefaultConnection"];
-            Dados.conecta = coneccao;
-
             string chavetip = Configuration.GetSection("TipSoft")["SecurityKey"];
-            Funcoes.wkschatip = chavetip;
-
+            DadosModel.wksstrsql = coneccao;
+            DadosModel.wkschatip = chavetip;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -46,23 +40,26 @@ namespace Nexxus15
             }
             else
             {
-                app.UseExceptionHandler("/Error");
+                app.UseExceptionHandler("/Home/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            DadosModel.wkscamweb = env.WebRootPath.ToString();
+            DadosModel.wkscamfis = env.ContentRootPath.ToString();
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
 
-            app.UseSession();
-
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapRazorPages();
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }
